@@ -11,23 +11,29 @@ import java.net.URL;
 
 public class StartingClass extends Applet implements Runnable, KeyListener {
 
-	private static final int MILI_INTERVAL = 17;
-
 	private Robot robot;
 	private Image image, character;
-	private URL base;
 	private Graphics second;
+	private URL base;
 
 	@Override
 	public void init() {
 
 		setSize(800, 480);
 		setBackground(Color.BLACK);
-
-		// takes focus
 		setFocusable(true);
+		addKeyListener(this);
 		Frame frame = (Frame) this.getParent().getParent();
 		frame.setTitle("Q-Bot Alpha");
+		try {
+			base = getDocumentBase();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		// Image Setups
+		character = getImage(base, "data/character.png");
+
 	}
 
 	@Override
@@ -36,42 +42,40 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 
 		Thread thread = new Thread(this);
 		thread.start();
-
 	}
 
 	@Override
 	public void stop() {
-		super.stop();
+		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void destroy() {
-		super.destroy();
+		// TODO Auto-generated method stub
 	}
 
+	/**
+	 * Here is the game infinite loop
+	 */
 	@Override
 	public void run() {
-
 		while (true) {
+			robot.update();
 			repaint();
 			try {
-				Thread.sleep(MILI_INTERVAL);
+				/*
+				 * updates each 17 miliseconds, so screen is updated
+				 * around 60 frames per second
+				 */
+				Thread.sleep(17);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-
-	}
-
-	@Override
-	public void paint(Graphics g) {
-		g.drawImage(character, robot.getCenterX() - 61,
-				robot.getCenterY() - 63, this);
-
 	}
 
 	/**
-	 * This implements double buffering in Applets
+	 * Double buffering implementation
 	 */
 	@Override
 	public void update(Graphics g) {
@@ -90,8 +94,9 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
+	public void paint(Graphics g) {
+		g.drawImage(character, robot.getCenterX() - 61,
+				robot.getCenterY() - 63, this);
 
 	}
 
@@ -108,23 +113,23 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 			break;
 
 		case KeyEvent.VK_LEFT:
-			System.out.println("Move left");
+			robot.moveLeft();
 			break;
 
 		case KeyEvent.VK_RIGHT:
-			System.out.println("Move right");
+			robot.moveRight();
 			break;
 
 		case KeyEvent.VK_SPACE:
-			System.out.println("Jump");
+			robot.jump();
 			break;
+
 		}
 
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_UP:
 			System.out.println("Stop moving up");
@@ -135,11 +140,11 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 			break;
 
 		case KeyEvent.VK_LEFT:
-			System.out.println("Stop moving left");
+			robot.stop();
 			break;
 
 		case KeyEvent.VK_RIGHT:
-			System.out.println("Stop moving right");
+			robot.stop();
 			break;
 
 		case KeyEvent.VK_SPACE:
@@ -149,4 +154,11 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		}
 
 	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
 }
