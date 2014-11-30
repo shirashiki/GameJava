@@ -3,7 +3,7 @@
 Implementing  the game as in kilobolt tutorial. 
 
 Stopped in
-http://www.kilobolt.com/day-8-animations
+http://www.kilobolt.com/day-9-2d-arrays
 
 libGDX
 https://github.com/libgdx/libgdx/wiki/Maven-integration
